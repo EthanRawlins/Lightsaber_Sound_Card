@@ -260,8 +260,8 @@ void hum(TMRpcm audio) {
 }
 
 void rainbowHum(TMRpcm audio) {
-  digitalWrite(HUM, HIGH);
-  digitalWrite(RAINBOW_HUM, LOW);
+  audio.pause();
+  audio.play("rainbowHum.wav");
 }
 
 void turnOff(boolean on, CRGB leds, TMRpcm audio) {
