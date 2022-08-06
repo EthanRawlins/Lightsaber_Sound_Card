@@ -178,17 +178,7 @@ void loop() {
           turnOn();
         }
         else {
-          on = false;
-          digitalWrite(HUM, HIGH); // turn off hum sound
-          digitalWrite(RAINBOW_HUM, HIGH);
-          digitalWrite(TURN_OFF, LOW); // turn off sound
-          delay(25);
-          digitalWrite(TURN_OFF, HIGH); // turn off turn off sound
-          for (int i = NUM_LEDS - 1; i >= 0; i--) {
-            leds[i] = CRGB(0, 0, 0);
-            FastLED.show();
-            delayMicroseconds(TURN_OFF_SPEED);
-          }
+          turnOff();
         }
       }
       hold = 1;
@@ -336,6 +326,17 @@ void hum() {
 }
 
 void turnOff() {
+  on = false;
+  digitalWrite(HUM, HIGH); // turn off hum sound
+  digitalWrite(RAINBOW_HUM, HIGH);
+  digitalWrite(TURN_OFF, LOW); // turn off sound
+  delay(25);
+  digitalWrite(TURN_OFF, HIGH); // turn off turn off sound
+  for (int i = NUM_LEDS - 1; i >= 0; i--) {
+    leds[i] = CRGB(0, 0, 0);
+    FastLED.show();
+    delayMicroseconds(TURN_OFF_SPEED);
+  }
 }
 
 void clash() {
