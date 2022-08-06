@@ -175,10 +175,10 @@ void loop() {
     if ((millis() - onTime) > holdTime) { // Button held down
       if(hold != 1) {
         if (on == false) {
-          turnOn();
+          turnOn(on, bladeFillType, leds, solidColors, solidColorIndex);
         }
         else {
-          turnOff();
+          turnOff(on, leds);
         }
       }
       hold = 1;
@@ -197,7 +197,7 @@ void loop() {
   lastReading = reading;
 // Button single press
   if (single == 1 && (millis() - lastSwitchTime) > doubleTime) {
-    singlePress();
+    singlePress(bladeFillType, solidColorIndex, paletteIndex, single);
   }
   if (on == true) {
     fillBlade(bladeFillType);
@@ -211,7 +211,7 @@ void loop() {
 // Drive clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
     abs(az) > MIN_CLASH){
-      clash();
+      clash(bladeFillType, leds);
     }
 
 // Drive swing sensor
@@ -224,7 +224,7 @@ void loop() {
 }
 
 
-void onRelease() {
+void onRelease(int bladeFillType, int single, long lastSwitchTime) {
 
   if ((millis() - lastSwitchTime) >= doubleTime) {
     single = 1;
@@ -234,7 +234,7 @@ void onRelease() {
 
 // Button double press
   if ((millis() - lastSwitchTime) < doubleTime) {
-    doublePress();
+    doublePress(bladeFillType, single, lastSwitchTime);
   }  
 }
 
@@ -264,7 +264,7 @@ void fillBlade(int fillType) {
   FastLED.show();  
 }
 
-void turnOn() {
+void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int solidColorIndex) {
   on = true;
   bladeFillType = 0;
   digitalWrite(TURN_ON, LOW); //turn on sound
@@ -288,7 +288,7 @@ void rainbow_hum() {
   digitalWrite(RAINBOW_HUM, LOW);
 }
 
-void turnOff() {
+void turnOff(boolean on, CRGB leds) {
   on = false;
   digitalWrite(HUM, HIGH); // turn off hum sound
   digitalWrite(RAINBOW_HUM, HIGH);
@@ -302,7 +302,7 @@ void turnOff() {
   }
 }
 
-void clash() {
+void clash(int bladeFillType, CRGB leds) {
   digitalWrite(HUM, HIGH);
   digitalWrite(RAINBOW_HUM, HIGH);
   digitalWrite(CLASH, LOW);
@@ -324,7 +324,7 @@ void swing() {
   digitalWrite(SWING, HIGH);
 }
 
-void singlePress() {
+void singlePress(int bladeFillType, int solidColorIndex, int paletteIndex, int single) {
   if (bladeFillType == 0) {
     if (solidColorIndex < NUM_SOLID_COLORS - 1) {
       solidColorIndex++;
@@ -344,7 +344,7 @@ void singlePress() {
   single = 0;
 }
 
-void doublePress() {
+void doublePress(int bladeFillType, int single, long lastSwitchTime) {
   if (bladeFillType == 0) {
     bladeFillType = 1;
   }
