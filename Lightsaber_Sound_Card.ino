@@ -197,23 +197,7 @@ void loop() {
   lastReading = reading;
 // Button single press
   if (single == 1 && (millis() - lastSwitchTime) > doubleTime) {
-    if (bladeFillType == 0) {
-      if (solidColorIndex < NUM_SOLID_COLORS - 1) {
-        solidColorIndex++;
-      }
-      else {
-        solidColorIndex = 0;
-      }
-    }
-    else {
-      if (paletteIndex < NUM_GRADIENT_PALETTES - 1) {
-        paletteIndex++;
-      }
-      else {
-        paletteIndex = 0;
-      }
-    }
-    single = 0;
+    singlePress();
   }
   if (on == true) {
     fillBlade(bladeFillType);
@@ -346,4 +330,24 @@ void swing() {
 }
 
 void rainbow_hum() {
+}
+
+void singlePress() {
+  if (bladeFillType == 0) {
+    if (solidColorIndex < NUM_SOLID_COLORS - 1) {
+      solidColorIndex++;
+    }
+    else {
+      solidColorIndex = 0;
+    }
+  }
+  else {
+    if (paletteIndex < NUM_GRADIENT_PALETTES - 1) {
+      paletteIndex++;
+    }
+    else {
+      paletteIndex = 0;
+    }
+  }
+  single = 0;
 }
