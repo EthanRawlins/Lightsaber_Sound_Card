@@ -3,18 +3,18 @@
 #include "TMRpcm.h"
 #include "SPI.h"
 
-TMRpcm tmrpcm;
+TMRpcm audio;
 
 void setup(){
-tmrpcm.speakerPin = 9;
+audio.speakerPin = 9;
 Serial.begin(9600);
 if (!SD.begin(SD_ChipSelectPin)) {
 Serial.println("SD fail");
 return;
 }
 
-tmrpcm.setVolume(5);
-tmrpcm.play("Voyage .wav");
+audio.setVolume(5);
+audio.play("Voyage .wav");
 }
 
 void loop(){  }
