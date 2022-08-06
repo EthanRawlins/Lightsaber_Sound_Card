@@ -308,6 +308,11 @@ void turnOn() {
 void hum() {
 }
 
+void rainbow_hum() {
+  digitalWrite(HUM, HIGH);
+  digitalWrite(RAINBOW_HUM, LOW);
+}
+
 void turnOff() {
   on = false;
   digitalWrite(HUM, HIGH); // turn off hum sound
@@ -326,11 +331,6 @@ void clash() {
 }
 
 void swing() {
-}
-
-void rainbow_hum() {
-  digitalWrite(HUM, HIGH);
-  digitalWrite(RAINBOW_HUM, LOW);
 }
 
 void singlePress() {
