@@ -175,17 +175,7 @@ void loop() {
     if ((millis() - onTime) > holdTime) { // Button held down
       if(hold != 1) {
         if (on == false) {
-          on = true;
-          bladeFillType = 0;
-          digitalWrite(TURN_ON, LOW); //turn on sound
-          delay(25);
-          for (int i = 0; i < NUM_LEDS - 1; i++) {
-            leds[i] = solidColors[solidColorIndex];
-            FastLED.show();
-            delayMicroseconds(TURN_ON_SPEED);
-          }
-          digitalWrite(TURN_ON, HIGH); // turn off turn on sound
-          digitalWrite(HUM, LOW); // turn hum sound on
+          turnOn();
         }
         else {
           on = false;
@@ -329,26 +319,30 @@ void fillBlade(int fillType) {
 }
 
 void turnOn() {
-
+  on = true;
+  bladeFillType = 0;
+  digitalWrite(TURN_ON, LOW); //turn on sound
+  delay(25);
+  for (int i = 0; i < NUM_LEDS - 1; i++) {
+    leds[i] = solidColors[solidColorIndex];
+    FastLED.show();
+    delayMicroseconds(TURN_ON_SPEED);
+  }
+  digitalWrite(TURN_ON, HIGH); // turn off turn on sound
+  digitalWrite(HUM, LOW); // turn hum sound on
 }
 
 void hum() {
-
 }
 
 void turnOff() {
-
 }
 
 void clash() {
-
 }
 
 void swing() {
-
 }
 
 void rainbow_hum() {
-
-}
 }
