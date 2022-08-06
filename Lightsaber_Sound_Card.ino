@@ -291,11 +291,10 @@ void clash(int bladeFillType, CRGB leds, TMRpcm audio) {
 }
 
 void swing(TMRpcm audio) {
-  digitalWrite(RAINBOW_HUM, HIGH);
-  digitalWrite(HUM, HIGH);
-  digitalWrite(SWING, LOW);
+  audio.pause();
+  audio.play("swing.wav");
   delay(25);
-  digitalWrite(SWING, HIGH);
+  audio.pause();
 }
 
 void singlePress(int bladeFillType, int solidColorIndex, int paletteIndex, int single) {
