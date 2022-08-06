@@ -208,7 +208,7 @@ void loop() {
     else {
       hum();
     }
-// Drive swing/clash sensor
+// Drive clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
     abs(az) > MIN_CLASH){
       digitalWrite(HUM, HIGH);
@@ -223,7 +223,8 @@ void loop() {
       fillBlade(bladeFillType);
       FastLED.show();
     }  
-    
+
+// Drive swing sensor
     if((abs(ax) > MIN_SWING && abs(ax) < MIN_SWING) || 
     (abs(ay) > MIN_SWING && abs(ay) < MIN_CLASH) || 
     (abs(az) > MIN_SWING && abs(az) < MIN_CLASH)){
