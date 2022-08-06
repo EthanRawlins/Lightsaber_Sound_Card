@@ -113,13 +113,6 @@ void setup() {
   audio.setVolume(5);
   audio.play("Voyage .wav");
 
-//begin sound driver
-  pinMode(TURN_ON, OUTPUT);
-  pinMode(HUM, OUTPUT);
-  pinMode(TURN_OFF, OUTPUT);
-  pinMode(CLASH, OUTPUT);
-  pinMode(SWING, OUTPUT);
-  pinMode(RAINBOW_HUM, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
 // initialize serial communication
   Serial.begin(38400);
@@ -132,14 +125,6 @@ void setup() {
 // verify connection
   Serial.println("Testing device connections...");
   Serial.println(accelgyro.testConnection() ? "MPU6050 connection successful" : "MPU6050 connection failed");
-  
-//sound triggers are active LOW, so keep HIGH when not in use
-  digitalWrite(TURN_ON, HIGH);
-  digitalWrite(HUM, HIGH);
-  digitalWrite(TURN_OFF, HIGH);
-  digitalWrite(CLASH, HIGH);
-  digitalWrite(SWING, HIGH);
-  digitalWrite(RAINBOW_HUM, HIGH);
  
 // configure fastLED
   FastLED.addLeds<WS2812B, LED_DATA_PIN, GRB>(leds, NUM_LEDS);
