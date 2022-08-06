@@ -206,8 +206,7 @@ void loop() {
       rainbowHum();
     }
     else {
-      digitalWrite(RAINBOW_HUM, HIGH);
-      digitalWrite(HUM, LOW);
+      hum();
     }
 // Drive swing/clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
@@ -306,6 +305,8 @@ void turnOn() {
 }
 
 void hum() {
+  digitalWrite(RAINBOW_HUM, HIGH);
+  digitalWrite(HUM, LOW);
 }
 
 void rainbow_hum() {
