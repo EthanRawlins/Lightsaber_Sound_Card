@@ -278,15 +278,14 @@ void turnOff(boolean on, CRGB leds, TMRpcm audio) {
 }
 
 void clash(int bladeFillType, CRGB leds, TMRpcm audio) {
-  digitalWrite(HUM, HIGH);
-  digitalWrite(RAINBOW_HUM, HIGH);
-  digitalWrite(CLASH, LOW);
+  audio.pause();
+  audio.play("clash.wav");
   // Add fastLED code here for flash on clash     *******************************************    CLASH LEDS HERE ***********************************
   fill_solid(leds, NUM_LEDS, CRGB(255, 255, 200));
   FastLED.show();
 
   delay(500);
-  digitalWrite(CLASH, HIGH);
+  audio.pause();
   fillBlade(bladeFillType);
   FastLED.show();
 }
