@@ -211,28 +211,14 @@ void loop() {
 // Drive clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
     abs(az) > MIN_CLASH){
-      digitalWrite(HUM, HIGH);
-      digitalWrite(RAINBOW_HUM, HIGH);
-      digitalWrite(CLASH, LOW);
-      // Add fastLED code here for flash on clash     *******************************************    CLASH LEDS HERE ***********************************
-      fill_solid(leds, NUM_LEDS, CRGB(255, 255, 200));
-      FastLED.show();
-  
-      delay(500);
-      digitalWrite(CLASH, HIGH);
-      fillBlade(bladeFillType);
-      FastLED.show();
-    }  
+      clash();
+    }
 
 // Drive swing sensor
     if((abs(ax) > MIN_SWING && abs(ax) < MIN_SWING) || 
     (abs(ay) > MIN_SWING && abs(ay) < MIN_CLASH) || 
     (abs(az) > MIN_SWING && abs(az) < MIN_CLASH)){
-      digitalWrite(RAINBOW_HUM, HIGH);
-      digitalWrite(HUM, HIGH);
-      digitalWrite(SWING, LOW);
-      delay(25);
-      digitalWrite(SWING, HIGH);
+      swing();
     }
   }
 }
@@ -330,9 +316,25 @@ void turnOff() {
 }
 
 void clash() {
+  digitalWrite(HUM, HIGH);
+  digitalWrite(RAINBOW_HUM, HIGH);
+  digitalWrite(CLASH, LOW);
+  // Add fastLED code here for flash on clash     *******************************************    CLASH LEDS HERE ***********************************
+  fill_solid(leds, NUM_LEDS, CRGB(255, 255, 200));
+  FastLED.show();
+
+  delay(500);
+  digitalWrite(CLASH, HIGH);
+  fillBlade(bladeFillType);
+  FastLED.show();
 }
 
 void swing() {
+  digitalWrite(RAINBOW_HUM, HIGH);
+  digitalWrite(HUM, HIGH);
+  digitalWrite(SWING, LOW);
+  delay(25);
+  digitalWrite(SWING, HIGH);
 }
 
 void singlePress() {
