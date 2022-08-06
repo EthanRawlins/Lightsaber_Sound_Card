@@ -327,3 +327,28 @@ void fillBlade(int fillType) {
   }
   FastLED.show();  
 }
+
+void turnOn() {
+
+}
+
+void hum() {
+
+}
+
+void turnOff() {
+
+}
+
+void clash() {
+
+}
+
+void swing() {
+
+}
+
+void rainbow_hum() {
+
+}
+}
