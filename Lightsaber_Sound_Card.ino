@@ -203,8 +203,7 @@ void loop() {
     fillBlade(bladeFillType);
     FastLED.show();
     if (bladeFillType == 3) {
-      digitalWrite(HUM, HIGH);
-      digitalWrite(RAINBOW_HUM, LOW);
+      rainbowHum();
     }
     else {
       digitalWrite(RAINBOW_HUM, HIGH);
@@ -330,6 +329,8 @@ void swing() {
 }
 
 void rainbow_hum() {
+  digitalWrite(HUM, HIGH);
+  digitalWrite(RAINBOW_HUM, LOW);
 }
 
 void singlePress() {
