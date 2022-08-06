@@ -24,10 +24,10 @@
 
 TMRpcm audio;
 
-#define SD_CARD_SELECT_PIN 4 // arduino pin wired to sd card
-#define LED_DATA_PIN 2 // arduino pin wired to led strip data
-#define SPEAKER_PIN 9 // arduino pin wired to speaker
-#define BUTTON_PIN  8 // arduino pin wired to push button
+#define SD_CARD_SELECT_PIN 2 // arduino pin wired to sd card
+#define LED_DATA_PIN 3 // arduino pin wired to led strip data
+#define SPEAKER_PIN 4 // arduino pin wired to speaker
+#define BUTTON_PIN  5 // arduino pin wired to push button
 
 #define NUM_LEDS 124
 
@@ -57,17 +57,6 @@ long lastSwitchTime = 0;
 
 int bladeFillType = 0;
 
-// Solid colors (bladeFillType = 0)
-#define NUM_SOLID_COLORS 8 // Number of solid colors
-CRGB blue = CRGB(0, 0, 255); // RGB code for blue
-CRGB red = CRGB(255, 0, 0); // RGB code for red
-CRGB pink = CRGB(255, 0, 70); // RGB code for pink
-CRGB purple = CRGB(200, 0, 200); // RGB code for purple
-CRGB green = CRGB(0, 255, 0); // RGB code for green
-CRGB cyan = CRGB(0, 255, 255); // RGB code for teal
-CRGB orange = CRGB(255, 30, 0); // RGB code for orange
-CRGB yellow = CRGB(255, 200, 0); // RGB code for yellow
-CRGB solidColors[NUM_SOLID_COLORS] = {blue, red, pink, purple, green, cyan, orange, yellow}; // Array for blade colors
 int solidColorIndex = 0; // Index (counter/placeholder) for RGB solid color array
 
 // gradient colors (bladeFillType = 1 or 2)
@@ -133,12 +122,26 @@ void setup() {
   FastLED.show();
 }
 
+
 void loop() {
+  
 // read raw accel/gyro measurements from device
   accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 // these methods (and a few others) are also available
 //accelgyro.getAcceleration(&ax, &ay, &az);
 //accelgyro.getRotation(&gx, &gy, &gz);
+
+// Solid colors (bladeFillType = 0)
+  int numSolidColors = 8; // Number of solid colors
+  CRGB blue = CRGB(0, 0, 255); // RGB code for blue
+  CRGB red = CRGB(255, 0, 0); // RGB code for red
+  CRGB pink = CRGB(255, 0, 70); // RGB code for pink
+  CRGB purple = CRGB(200, 0, 200); // RGB code for purple
+  CRGB green = CRGB(0, 255, 0); // RGB code for green
+  CRGB cyan = CRGB(0, 255, 255); // RGB code for teal
+  CRGB orange = CRGB(255, 30, 0); // RGB code for orange
+  CRGB yellow = CRGB(255, 200, 0); // RGB code for yellow
+  CRGB solidColors[numSolidColors] = {blue, red, pink, purple, green, cyan, orange, yellow}; // Array for blade colors
 
   int reading = digitalRead(BUTTON_PIN);
 
@@ -152,10 +155,10 @@ void loop() {
     if ((millis() - onTime) > holdTime) { // Button held down
       if(hold != 1) {
         if (on == false) {
-          turnOn(on, bladeFillType, leds, solidColors, solidColorIndex, audio);
+          turnOn(solidColors);
         }
         else {
-          turnOff(on, leds, audio);
+          turnOff();
         }
       }
       hold = 1;
@@ -165,7 +168,7 @@ void loop() {
 // Button released
   if (reading == LOW && lastReading == HIGH) {
     if (((millis() - onTime) > bounceTime) && hold != 1) {
-      onRelease(bladeFillType, single, lastSwitchTime);
+      onRelease();
     }
     if (hold == 1) {
       hold = 0;
@@ -174,34 +177,33 @@ void loop() {
   lastReading = reading;
 // Button single press
   if (single == 1 && (millis() - lastSwitchTime) > doubleTime) {
-    singlePress(bladeFillType, solidColorIndex, paletteIndex, single);
+    singlePress(numSolidColors);
   }
   if (on == true) {
-    fillBlade(bladeFillType);
+    fillBlade(bladeFillType, solidColors);
     FastLED.show();
     if (bladeFillType == 3) {
-      rainbowHum(audio);
+      rainbowHum();
     }
     else {
-      hum(audio);
+      hum();
     }
 // Drive clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
     abs(az) > MIN_CLASH){
-      clash(bladeFillType, leds, audio);
+      clash(bladeFillType, solidColors);
     }
 
 // Drive swing sensor
     if((abs(ax) > MIN_SWING && abs(ax) < MIN_SWING) || 
     (abs(ay) > MIN_SWING && abs(ay) < MIN_CLASH) || 
     (abs(az) > MIN_SWING && abs(az) < MIN_CLASH)){
-      swing(audio);
+      swing();
     }
   }
 }
 
-
-void onRelease(int bladeFillType, int single, long lastSwitchTime) {
+void onRelease() {
 
   if ((millis() - lastSwitchTime) >= doubleTime) {
     single = 1;
@@ -211,11 +213,11 @@ void onRelease(int bladeFillType, int single, long lastSwitchTime) {
 
 // Button double press
   if ((millis() - lastSwitchTime) < doubleTime) {
-    doublePress(bladeFillType, single, lastSwitchTime);
-  }  
+    doublePress();
+  }
 }
 
-void fillBlade(int fillType) {
+void fillBlade(int fillType, CRGB solidColors) {
   if (fillType == 0) {
 // Solid color blade fill
     fill_solid(leds, NUM_LEDS, solidColors[solidColorIndex]);
@@ -241,7 +243,7 @@ void fillBlade(int fillType) {
   FastLED.show();  
 }
 
-void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int solidColorIndex, TMRpcm audio) {
+void turnOn(CRGB solidColors) {
   on = true;
   bladeFillType = 0;
   audio.play("turn_on.wav"); //turn on sound
@@ -254,17 +256,17 @@ void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int soli
   audio.pause(); // turn off turn on sound
 }
 
-void hum(TMRpcm audio) {
+void hum() {
   audio.pause();
   audio.play("hum.wav");
 }
 
-void rainbowHum(TMRpcm audio) {
+void rainbowHum() {
   audio.pause();
   audio.play("rainbowHum.wav");
 }
 
-void turnOff(boolean on, CRGB leds, TMRpcm audio) {
+void turnOff() {
   on = false;
   audio.pause(); // turn off hum sound
   audio.play("turnOff.wav"); // turn off sound
@@ -277,7 +279,7 @@ void turnOff(boolean on, CRGB leds, TMRpcm audio) {
   }
 }
 
-void clash(int bladeFillType, CRGB leds, TMRpcm audio) {
+void clash(int fillType, CRGB solidColors) {
   audio.pause();
   audio.play("clash.wav");
   // Add fastLED code here for flash on clash     *******************************************    CLASH LEDS HERE ***********************************
@@ -286,20 +288,20 @@ void clash(int bladeFillType, CRGB leds, TMRpcm audio) {
 
   delay(500);
   audio.pause();
-  fillBlade(bladeFillType);
+  fillBlade(fillType, solidColors);
   FastLED.show();
 }
 
-void swing(TMRpcm audio) {
+void swing() {
   audio.pause();
   audio.play("swing.wav");
   delay(25);
   audio.pause();
 }
 
-void singlePress(int bladeFillType, int solidColorIndex, int paletteIndex, int single) {
+void singlePress(int numSolidColors) {
   if (bladeFillType == 0) {
-    if (solidColorIndex < NUM_SOLID_COLORS - 1) {
+    if (solidColorIndex < numSolidColors - 1) {
       solidColorIndex++;
     }
     else {
@@ -317,7 +319,7 @@ void singlePress(int bladeFillType, int solidColorIndex, int paletteIndex, int s
   single = 0;
 }
 
-void doublePress(int bladeFillType, int single, long lastSwitchTime) {
+void doublePress() {
   if (bladeFillType == 0) {
     bladeFillType = 1;
   }
