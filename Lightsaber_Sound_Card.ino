@@ -35,14 +35,8 @@ CRGB leds[NUM_LEDS];
 
 // sound triggers
 #define SPEAKER_PIN 9 // arduino pin set for speaker
-#define TURN_ON 9 // arduino pin wired to turn on sound trigger on sound board                     **********************************   Change this!!!!  *****************************************
-#define HUM 4 // arduino pin wired to hum sound trigger on sound board
-#define TURN_OFF 5 // arduino pin wired to turn off sound trigger on sound board
-#define CLASH 6 // arduino pin wired to clash sound trigger on sound board
-#define SWING 7 // arduino pin wired to swing sound trigger on sound board
-#define RAINBOW_HUM 11 // arduino pin wired to rainbow sound trigger on sound board
 
-#define BUTTON  8 // arduino pin wired to push button
+#define BUTTON_PIN  8 // arduino pin wired to push button
 
 int bounceTime = 50; // debounce time for button press
 int holdTime = 250; // How long you have to hold button down for long press
@@ -128,7 +122,7 @@ void setup() {
   pinMode(CLASH, OUTPUT);
   pinMode(SWING, OUTPUT);
   pinMode(RAINBOW_HUM, OUTPUT);
-  pinMode(BUTTON, INPUT);
+  pinMode(BUTTON_PIN, INPUT);
 // initialize serial communication
   Serial.begin(38400);
 
@@ -163,7 +157,7 @@ void loop() {
 //accelgyro.getAcceleration(&ax, &ay, &az);
 //accelgyro.getRotation(&gx, &gy, &gz);
 
-  int reading = digitalRead(BUTTON);
+  int reading = digitalRead(BUTTON_PIN);
 
 // Button first pressed
   if (reading == HIGH && lastReading == LOW) {
