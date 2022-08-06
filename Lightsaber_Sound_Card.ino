@@ -244,15 +244,14 @@ void fillBlade(int fillType) {
 void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int solidColorIndex) {
   on = true;
   bladeFillType = 0;
-  digitalWrite(TURN_ON, LOW); //turn on sound
+  audio.play("turn_on.wav"); //turn on sound
   delay(25);
   for (int i = 0; i < NUM_LEDS - 1; i++) {
     leds[i] = solidColors[solidColorIndex];
     FastLED.show();
     delayMicroseconds(TURN_ON_SPEED);
   }
-  digitalWrite(TURN_ON, HIGH); // turn off turn on sound
-  digitalWrite(HUM, LOW); // turn hum sound on
+  audio.pause(); // turn off turn on sound
 }
 
 void hum() {
