@@ -24,19 +24,17 @@
 
 TMRpcm audio;
 
-#define SD_ChipSelectPin 4
+#define SD_CARD_SELECT_PIN 4 // arduino pin wired to sd card
+#define LED_DATA_PIN 2 // arduino pin wired to led strip data
+#define SPEAKER_PIN 9 // arduino pin wired to speaker
+#define BUTTON_PIN  8 // arduino pin wired to push button
+
 #define NUM_LEDS 124
-#define LED_DATA_PIN 2
 
 CRGB leds[NUM_LEDS];
 
 #define TURN_ON_SPEED 40 // speed (microseconds) for led crawl up the blade when turned on
 #define TURN_OFF_SPEED 40 // speed (microseconds) for led crawl down the blade when turned off
-
-// sound triggers
-#define SPEAKER_PIN 9 // arduino pin set for speaker
-
-#define BUTTON_PIN  8 // arduino pin wired to push button
 
 int bounceTime = 50; // debounce time for button press
 int holdTime = 250; // How long you have to hold button down for long press
@@ -107,7 +105,7 @@ void setup() {
   
   audio.speakerPin = SPEAKER_PIN;
   Serial.begin(9600);
-  if (!SD.begin(SD_ChipSelectPin)) {
+  if (!SD.begin(SD_CARD_SELECT_PIN)) {
   Serial.println("SD fail");
   return;
   }
