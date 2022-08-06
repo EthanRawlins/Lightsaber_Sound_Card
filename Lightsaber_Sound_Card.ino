@@ -255,8 +255,8 @@ void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int soli
 }
 
 void hum(TMRpcm audio) {
-  digitalWrite(RAINBOW_HUM, HIGH);
-  digitalWrite(HUM, LOW);
+  audio.pause();
+  audio.play("hum.wav");
 }
 
 void rainbowHum(TMRpcm audio) {
