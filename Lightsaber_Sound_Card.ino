@@ -351,3 +351,10 @@ void singlePress() {
   }
   single = 0;
 }
+
+void doublePress() {
+}
+
+void triplePress() {
+}
+}
