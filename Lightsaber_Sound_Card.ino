@@ -152,10 +152,10 @@ void loop() {
     if ((millis() - onTime) > holdTime) { // Button held down
       if(hold != 1) {
         if (on == false) {
-          turnOn(on, bladeFillType, leds, solidColors, solidColorIndex);
+          turnOn(on, bladeFillType, leds, solidColors, solidColorIndex, audio);
         }
         else {
-          turnOff(on, leds);
+          turnOff(on, leds, audio);
         }
       }
       hold = 1;
@@ -165,7 +165,7 @@ void loop() {
 // Button released
   if (reading == LOW && lastReading == HIGH) {
     if (((millis() - onTime) > bounceTime) && hold != 1) {
-      onRelease();
+      onRelease(bladeFillType, single, lastSwitchTime);
     }
     if (hold == 1) {
       hold = 0;
@@ -180,22 +180,22 @@ void loop() {
     fillBlade(bladeFillType);
     FastLED.show();
     if (bladeFillType == 3) {
-      rainbowHum();
+      rainbowHum(audio);
     }
     else {
-      hum();
+      hum(audio);
     }
 // Drive clash sensor
     if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
     abs(az) > MIN_CLASH){
-      clash(bladeFillType, leds);
+      clash(bladeFillType, leds, audio);
     }
 
 // Drive swing sensor
     if((abs(ax) > MIN_SWING && abs(ax) < MIN_SWING) || 
     (abs(ay) > MIN_SWING && abs(ay) < MIN_CLASH) || 
     (abs(az) > MIN_SWING && abs(az) < MIN_CLASH)){
-      swing();
+      swing(audio);
     }
   }
 }
@@ -241,7 +241,7 @@ void fillBlade(int fillType) {
   FastLED.show();  
 }
 
-void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int solidColorIndex) {
+void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int solidColorIndex, TMRpcm audio) {
   on = true;
   bladeFillType = 0;
   audio.play("turn_on.wav"); //turn on sound
@@ -254,17 +254,17 @@ void turnOn(boolean on, int bladeFillType, CRGB leds, CRGB solidColors, int soli
   audio.pause(); // turn off turn on sound
 }
 
-void hum() {
+void hum(TMRpcm audio) {
   digitalWrite(RAINBOW_HUM, HIGH);
   digitalWrite(HUM, LOW);
 }
 
-void rainbow_hum() {
+void rainbowHum(TMRpcm audio) {
   digitalWrite(HUM, HIGH);
   digitalWrite(RAINBOW_HUM, LOW);
 }
 
-void turnOff(boolean on, CRGB leds) {
+void turnOff(boolean on, CRGB leds, TMRpcm audio) {
   on = false;
   digitalWrite(HUM, HIGH); // turn off hum sound
   digitalWrite(RAINBOW_HUM, HIGH);
@@ -278,7 +278,7 @@ void turnOff(boolean on, CRGB leds) {
   }
 }
 
-void clash(int bladeFillType, CRGB leds) {
+void clash(int bladeFillType, CRGB leds, TMRpcm audio) {
   digitalWrite(HUM, HIGH);
   digitalWrite(RAINBOW_HUM, HIGH);
   digitalWrite(CLASH, LOW);
@@ -292,7 +292,7 @@ void clash(int bladeFillType, CRGB leds) {
   FastLED.show();
 }
 
-void swing() {
+void swing(TMRpcm audio) {
   digitalWrite(RAINBOW_HUM, HIGH);
   digitalWrite(HUM, HIGH);
   digitalWrite(SWING, LOW);
