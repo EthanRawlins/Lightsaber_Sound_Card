@@ -266,11 +266,10 @@ void rainbowHum(TMRpcm audio) {
 
 void turnOff(boolean on, CRGB leds, TMRpcm audio) {
   on = false;
-  digitalWrite(HUM, HIGH); // turn off hum sound
-  digitalWrite(RAINBOW_HUM, HIGH);
-  digitalWrite(TURN_OFF, LOW); // turn off sound
+  audio.pause(); // turn off hum sound
+  audio.play("turnOff.wav"); // turn off sound
   delay(25);
-  digitalWrite(TURN_OFF, HIGH); // turn off turn off sound
+  audio.pause(); // turn off turn off sound
   for (int i = NUM_LEDS - 1; i >= 0; i--) {
     leds[i] = CRGB(0, 0, 0);
     FastLED.show();
