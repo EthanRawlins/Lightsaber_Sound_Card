@@ -359,7 +359,3 @@ void singlePress() {
 
 void doublePress() {
 }
-
-void triplePress() {
-}
-}
