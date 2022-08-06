@@ -17,7 +17,7 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
 
-// SD
+// SD Card reader
 #include "SD.h"
 #include "TMRpcm.h"
 #include "SPI.h"
@@ -36,15 +36,9 @@ CRGB leds[NUM_LEDS];
 #define TURN_ON_SPEED 40 // speed (microseconds) for led crawl up the blade when turned on
 #define TURN_OFF_SPEED 40 // speed (microseconds) for led crawl down the blade when turned off
 
-int bounceTime = 50; // debounce time for button press
-int holdTime = 250; // How long you have to hold button down for long press
-int doubleTime = 250; // Time between double presses
-
 MPU6050 accelgyro; // Initializing accelerometer library?
 int16_t ax, ay, az; // setting axes for accelerometer
 int16_t gx, gy, gz; // setting axes for accelerometer
-#define MIN_CLASH 32600 //minimum amount of acceleration to trigger clash
-#define MIN_SWING 26000 //minimum amount of acceleration to trigger swing
 
 int lastReading = LOW;
 int hold = 0;
@@ -58,6 +52,10 @@ long lastSwitchTime = 0;
 int bladeFillType = 0;
 
 int solidColorIndex = 0; // Index (counter/placeholder) for RGB solid color array
+
+int paletteIndex = 0; // Index (counter/placeholder) for RGB palette color
+int gradientIndex = 0; // Index for starting gradient color on blade
+#define GRADIENT_MOVE_SPEED 10 // speed (milliseconds) for how fast the color gradient moves on the blade when bladeFillType = 2
 
 // gradient colors (bladeFillType = 1 or 2)
 #define NUM_GRADIENT_PALETTES 2 // Number of gradient palettes
@@ -80,13 +78,7 @@ DEFINE_GRADIENT_PALETTE (rainbow_gradient) {
   215, 200, 0, 200, // purple
   255, 255, 0, 0 // red again
 };
-CRGBPalette16 bluePurplePal = gradient_1;
-CRGBPalette16 heatmapPal = gradient_2;
-CRGBPalette16 rainbowGradient = rainbow_gradient;
-CRGBPalette16 gradientColors[NUM_GRADIENT_PALETTES] = {bluePurplePal, heatmapPal};
-int paletteIndex = 0; // Index (counter/placeholder) for RGB palette color
-int gradientIndex = 0; // Index for starting gradient color on blade
-#define GRADIENT_MOVE_SPEED 10 // speed (milliseconds) for how fast the color gradient moves on the blade when bladeFillType = 2
+  
 
 void setup() {
 // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -143,6 +135,9 @@ void loop() {
   CRGB yellow = CRGB(255, 200, 0); // RGB code for yellow
   CRGB solidColors[numSolidColors] = {blue, red, pink, purple, green, cyan, orange, yellow}; // Array for blade colors
 
+  int holdTime = 250; // How long you have to hold button down for long press
+  int doubleTime = 250; // Time between double presses
+  int bounceTime = 50; // debounce time for button press
   int reading = digitalRead(BUTTON_PIN);
 
 // Button first pressed
@@ -168,7 +163,7 @@ void loop() {
 // Button released
   if (reading == LOW && lastReading == HIGH) {
     if (((millis() - onTime) > bounceTime) && hold != 1) {
-      onRelease();
+      onRelease(doubleTime);
     }
     if (hold == 1) {
       hold = 0;
@@ -189,21 +184,21 @@ void loop() {
       hum();
     }
 // Drive clash sensor
-    if(abs(ax) > MIN_CLASH || abs(ay) > MIN_CLASH || 
-    abs(az) > MIN_CLASH){
+    if(abs(ax) > 32600 || abs(ay) > 32600 || 
+    abs(az) > 32600){
       clash(bladeFillType, solidColors);
     }
 
 // Drive swing sensor
-    if((abs(ax) > MIN_SWING && abs(ax) < MIN_SWING) || 
-    (abs(ay) > MIN_SWING && abs(ay) < MIN_CLASH) || 
-    (abs(az) > MIN_SWING && abs(az) < MIN_CLASH)){
+    if((abs(ax) > 26000 && abs(ax) < 26000) || 
+    (abs(ay) > 26000 && abs(ay) < 32600) || 
+    (abs(az) > 26000 && abs(az) < 32600)){
       swing();
     }
   }
 }
 
-void onRelease() {
+void onRelease(int doubleTime) {
 
   if ((millis() - lastSwitchTime) >= doubleTime) {
     single = 1;
@@ -218,6 +213,11 @@ void onRelease() {
 }
 
 void fillBlade(int fillType, CRGB solidColors) {
+  CRGBPalette16 bluePurplePal = gradient_1;
+  CRGBPalette16 heatmapPal = gradient_2;
+  CRGBPalette16 rainbowGradient = rainbow_gradient;
+  CRGBPalette16 gradientColors[NUM_GRADIENT_PALETTES] = {bluePurplePal, heatmapPal};
+  
   if (fillType == 0) {
 // Solid color blade fill
     fill_solid(leds, NUM_LEDS, solidColors[solidColorIndex]);
