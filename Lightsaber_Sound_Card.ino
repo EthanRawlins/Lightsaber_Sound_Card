@@ -234,20 +234,7 @@ void onRelease() {
 
 // Button double press
   if ((millis() - lastSwitchTime) < doubleTime) {
-    if (bladeFillType == 0) {
-      bladeFillType = 1;
-    }
-    else if (bladeFillType == 1) {
-      bladeFillType = 2;
-    }
-    else if (bladeFillType == 2) {
-      bladeFillType = 3;
-    }
-    else {
-      bladeFillType = 0;
-    }
-    single = 0;
-    lastSwitchTime = millis();
+    doublePress();
   }  
 }
 
@@ -358,4 +345,18 @@ void singlePress() {
 }
 
 void doublePress() {
+  if (bladeFillType == 0) {
+    bladeFillType = 1;
+  }
+  else if (bladeFillType == 1) {
+    bladeFillType = 2;
+  }
+  else if (bladeFillType == 2) {
+    bladeFillType = 3;
+  }
+  else {
+    bladeFillType = 0;
+  }
+  single = 0;
+  lastSwitchTime = millis();
 }
