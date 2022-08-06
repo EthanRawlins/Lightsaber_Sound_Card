@@ -281,7 +281,23 @@ void turnOff() {
 
 void clash(int fillType, CRGB solidColors) {
   audio.pause();
-  audio.play("clash.wav");
+  int randomNum = random(0, 3);
+  switch(randomNum) {
+    case 0:
+      audio.play("clash0.wav");
+      break;
+    case 1:
+      audio.play("clash1.wav");
+      break;
+    case 2:
+      audio.play("clash2.wav");
+      break;
+    case 3:
+      audio.play("clash3.wav");
+      break;
+    default:
+      break;
+  }
   // Add fastLED code here for flash on clash     *******************************************    CLASH LEDS HERE ***********************************
   fill_solid(leds, NUM_LEDS, CRGB(255, 255, 200));
   FastLED.show();
@@ -294,7 +310,17 @@ void clash(int fillType, CRGB solidColors) {
 
 void swing() {
   audio.pause();
-  audio.play("swing.wav");
+  int randomNum = random(0, 1);
+  switch(randomNum) {
+    case 0:
+      audio.play("swing0.wav");
+      break;
+    case 1:
+      audio.play("swing1.wav");
+      break;
+    default:
+      break;
+  }
   delay(25);
   audio.pause();
 }
